@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Prototype "Bar"</title>
+<style>
+:root {
+	--dt_color-base-sec: #f8f8f8;
+	--dt_color-content-pry: #1d1c1d;
+	--dt_color-content-sec: #454447;
+	--dt_color-surf-pry: #1d1c1d0f;
+	--dt_color-otl-sec: #5e5d6073;
+	--dt_color-constants-white: #ffffff;
+	--sk_sapphire_blue: #1264a3;
+	--sk_foreground_low: #1d1c1d21;
+	--sk_foreground_max: #616061;
+	--form_border_radius: 8px;
+	--dt_static_space-025: 4px;
+	--dt_static_space-050: 8px;
+	--dt_static_space-075: 12px;
+	--dt_static_space-150: 24px;
+	--dt_static_space-200: 32px;
+}
+
+body {
+	margin: 0;
+	padding: 48px;
+	background: #fff;
+	color: var(--dt_color-content-pry);
+	font-family: Lato, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	font-size: 15px;
+	line-height: 1.46668;
+}
+
+.p-demo {
+	max-width: 420px;
+}
+
+.p-demo__label {
+	display: block;
+	margin-bottom: var(--dt_static_space-025);
+	font-weight: 700;
+	font-size: 15px;
+}
+
+.c-select_input__wrapper {
+	min-height: 28px;
+	border-radius: var(--form_border_radius);
+	display: flex;
+	gap: var(--dt_static_space-050);
+	position: relative;
+	align-items: center;
+	justify-content: space-between;
+	width: 360px;
+	height: 36px;
+}
+
+.c-select_input,
+.c-select_input__content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	padding: var(--dt_static_space-025) var(--dt_static_space-075);
+	display: flex;
+	align-items: center;
+	border-radius: var(--form_border_radius);
+	justify-content: space-between;
+	line-height: 1.5;
+	box-sizing: border-box;
+	font-family: inherit;
+	font-size: 15px;
+}
+
+.c-select_input__input_container {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.c-select_input {
+	border: 1px solid var(--dt_color-otl-sec);
+	background: #fff;
+	color: var(--dt_color-content-pry);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	outline: none;
+}
+
+.c-select_input::placeholder {
+	color: var(--sk_foreground_max);
+}
+
+.c-select_input:focus {
+	border-color: transparent;
+	box-shadow: 0 0 0 1px #1d9bd1, 0 0 0 5px #1d9bd140;
+}
+
+.c-select_input--with_icon_right .c-select_input,
+.c-select_input--with_icon_right .c-select_input__content {
+	padding-right: var(--dt_static_space-200);
+}
+
+.c-select_input__content {
+	pointer-events: auto;
+}
+
+.c-select_input__content[hidden] {
+	display: none;
+}
+
+.c-select_input__content_text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.c-select_input--offscreen {
+	color: transparent;
+	caret-color: transparent;
+}
+
+.c-select_input--offscreen::selection {
+	background-color: transparent;
+	color: transparent;
+}
+
+.c-select_input__icon_container {
+	cursor: pointer;
+	position: absolute;
+	right: var(--dt_static_space-075);
+	display: flex;
+	align-items: center;
+	pointer-events: none;
+}
+
+.c-select_input__icon {
+	color: var(--dt_color-content-sec);
+	display: flex;
+}
+
+.c-select_options_list__wrapper {
+	background-color: var(--dt_color-base-sec);
+	border-radius: 6px;
+	box-shadow: 0 0 0 1px var(--sk_foreground_low), 0 5px 10px rgb(0 0 0 / 12%);
+	margin: var(--dt_static_space-025) 0 0;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 360px;
+	user-select: none;
+	z-index: 100;
+	list-style: none;
+	box-sizing: border-box;
+}
+
+.c-select_options_list {
+	max-height: 240px;
+	overflow-y: auto;
+	padding: 2px 0;
+	margin: 0;
+	list-style: none;
+}
+
+.c-select_options_list__option {
+	display: flex;
+	align-items: center;
+	height: 28px;
+	color: var(--dt_color-content-pry);
+	cursor: pointer;
+	padding: 0 var(--dt_static_space-150);
+	box-sizing: border-box;
+	font-size: 15px;
+	position: relative;
+}
+
+.c-select_options_list__option--selected {
+	color: var(--sk_sapphire_blue);
+}
+
+.c-select_options_list__selected::before {
+	content: '\2713';
+	position: absolute;
+	left: 8px;
+	font-size: 13px;
+}
+
+.c-select_options_list__option--active {
+	background-color: var(--sk_sapphire_blue);
+	color: var(--dt_color-constants-white);
+}
+
+.c-select_options_list__option--empty {
+	color: var(--sk_foreground_max);
+	cursor: default;
+}
+
+.c-select_options_list__option_label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: 100%;
+	box-sizing: border-box;
+}
+</style>
+</head>
+<body>
+
+<h1>Prototype "Bar"</h1>
+<div class="p-demo">
+	<label class="p-demo__label" for="language-select">Translate to</label>
+	<div class="c-select_input__wrapper c-select_input--with_icon_right" id="wrapper">
+		<div class="c-select_input__input_container">
+			<input
+				class="c-select_input"
+				id="language-select"
+				name="language-select"
+				type="text"
+				role="combobox"
+				aria-autocomplete="list"
+				aria-expanded="false"
+				aria-controls="language-select_listbox"
+				aria-required="true"
+				autocomplete="off"
+				spellcheck="false"
+				placeholder="Search for a language"
+			/>
+			<div class="c-select_input__content" id="overlay" hidden>
+				<span class="c-select_input__content_text" id="overlay-text"></span>
+			</div>
+		</div>
+		<div class="c-select_input__icon_container">
+			<span class="c-select_input__icon" aria-hidden="true">
+				<svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 13.2 5.3 8.5a1 1 0 0 1 1.4-1.4L10 10.4l3.3-3.3a1 1 0 0 1 1.4 1.4L10 13.2Z"/></svg>
+			</span>
+		</div>
+	</div>
+
+	<div id="listbox-host"></div>
+</div>
+
+<script>
+const AUTO_SELECT_TEXT = true;
+
+const SELECTION_FOLLOWS_INPUT = true;
+
+const SELECT_ID = 'language-select';
+
+const OPTIONS = [
+	{ label: 'Afrikaans', value: 'af' },
+	{ label: 'Albanian', value: 'sq' },
+	{ label: 'Arabic', value: 'ar' },
+	{ label: 'Azerbaijani', value: 'az' },
+	{ label: 'Bengali', value: 'bn' },
+	{ label: 'Bulgarian', value: 'bg' },
+	{ label: 'Chinese (Simplified)', value: 'zh' },
+	{ label: 'Chinese (Traditional)', value: 'zh-Hant' },
+	{ label: 'Croatian', value: 'hr' },
+	{ label: 'Czech', value: 'cs' },
+	{ label: 'Danish', value: 'da' },
+	{ label: 'Dutch', value: 'nl' },
+	{ label: 'English (US)', value: 'en-US' },
+	{ label: 'English (UK)', value: 'en-GB' },
+	{ label: 'Finnish', value: 'fi' },
+	{ label: 'French', value: 'fr' },
+	{ label: 'German', value: 'de' },
+	{ label: 'Greek', value: 'el' },
+	{ label: 'Gujarati', value: 'gu' },
+	{ label: 'Hebrew', value: 'he' },
+	{ label: 'Hindi', value: 'hi' },
+	{ label: 'Hungarian', value: 'hu' },
+	{ label: 'Indonesian', value: 'id' },
+	{ label: 'Italian', value: 'it' },
+	{ label: 'Japanese', value: 'ja' },
+	{ label: 'Korean', value: 'ko' },
+	{ label: 'Lithuanian', value: 'lt' },
+	{ label: 'Malay', value: 'ms' },
+	{ label: 'Nepali', value: 'ne' },
+	{ label: 'Norwegian', value: 'no' },
+	{ label: 'Persian', value: 'fa' },
+	{ label: 'Polish', value: 'pl' },
+	{ label: 'Portuguese (Brazil)', value: 'pt-BR' },
+	{ label: 'Portuguese (Portugal)', value: 'pt-PT' },
+	{ label: 'Punjabi', value: 'pa' },
+	{ label: 'Romanian', value: 'ro' },
+	{ label: 'Russian', value: 'ru' },
+	{ label: 'Serbian', value: 'sr' },
+	{ label: 'Sinhalese', value: 'si' },
+	{ label: 'Slovak', value: 'sk' },
+	{ label: 'Slovenian', value: 'sl' },
+	{ label: 'Spanish (Spain)', value: 'es-ES' },
+	{ label: 'Spanish (Latin America)', value: 'es-LA' },
+	{ label: 'Swahili', value: 'sw' },
+	{ label: 'Swedish', value: 'sv' },
+	{ label: 'Tagalog', value: 'tl' },
+	{ label: 'Tamil', value: 'ta' },
+	{ label: 'Telugu', value: 'te' },
+	{ label: 'Thai', value: 'th' },
+	{ label: 'Turkish', value: 'tr' },
+	{ label: 'Ukrainian', value: 'uk' },
+	{ label: 'Urdu', value: 'ur' },
+	{ label: 'Uzbek', value: 'uz' },
+	{ label: 'Vietnamese', value: 'vi' },
+];
+
+const INITIAL_SELECTED_OPTION = OPTIONS.find((option) => option.label === 'English (US)');
+
+const input = document.getElementById(SELECT_ID);
+const wrapper = document.getElementById('wrapper');
+const overlay = document.getElementById('overlay');
+const overlayText = document.getElementById('overlay-text');
+const listboxHost = document.getElementById('listbox-host');
+
+const state = {
+	filterQuery: INITIAL_SELECTED_OPTION.label,
+	selectedOption: INITIAL_SELECTED_OPTION,
+	options: OPTIONS,
+	isExpanded: false,
+	activeRowIndex: undefined,
+	hasFocus: false,
+	focusedViaMouse: false,
+};
+
+let backspaceOrDeletePressed = false;
+
+const CLICK_OPEN = 'open';
+const CLICK_DISMISS = 'dismiss';
+const CLICK_CARET = 'caret';
+let clickPhase = CLICK_OPEN;
+
+const SEPARATORS = /[-_'.’​()/／\s#]/g;
+
+function matches(label, query) {
+	const haystack = label.toLowerCase().replace(SEPARATORS, '');
+	const needle = query.toLowerCase().replace(SEPARATORS, '');
+	if (!needle) return true;
+	let i = 0;
+	for (const char of haystack) {
+		if (char === needle[i]) i += 1;
+		if (i === needle.length) return true;
+	}
+	return false;
+}
+
+function defaultFilter(options, query) {
+	if (!query) return options;
+	return options.filter((option) => matches(option.label, query));
+}
+
+function setSelectState(patch, callback) {
+	const prev = { ...state };
+	const queryChanged =
+		patch.filterQuery !== undefined && patch.filterQuery !== state.filterQuery;
+
+	Object.assign(state, patch);
+
+	if (queryChanged) {
+		state.options = defaultFilter(OPTIONS, state.filterQuery);
+	}
+
+	render();
+	if (callback) callback();
+	afterUpdate(prev);
+}
+
+function afterUpdate(prev) {
+	const shouldSelectOnFocusTransition = AUTO_SELECT_TEXT || !SELECTION_FOLLOWS_INPUT;
+
+	if (
+		state.selectedOption &&
+		state.hasFocus &&
+		!prev.hasFocus &&
+		!state.focusedViaMouse &&
+		shouldSelectOnFocusTransition
+	) {
+		setTimeout(applyArmSelection, 50);
+	}
+}
+
+function shouldShowStaticInputContent() {
+	return !!state.selectedOption && !state.hasFocus && !state.isExpanded;
+}
+
+function render() {
+	if (input.value !== state.filterQuery) input.value = state.filterQuery;
+
+	const showStatic = shouldShowStaticInputContent();
+	input.classList.toggle('c-select_input--offscreen', showStatic);
+	overlay.hidden = !showStatic;
+	if (showStatic) overlayText.textContent = state.selectedOption.label;
+
+	input.setAttribute('aria-expanded', String(state.isExpanded));
+	input.placeholder =
+		state.filterQuery || state.selectedOption ? '' : 'Search for a language';
+
+	if (state.isExpanded && typeof state.activeRowIndex === 'number') {
+		input.setAttribute(
+			'aria-activedescendant',
+			`${SELECT_ID}_option_${state.activeRowIndex}`,
+		);
+	} else {
+		input.removeAttribute('aria-activedescendant');
+	}
+
+	renderOptionsList();
+}
+
+let renderedForOptions = null;
+let rowNodes = [];
+
+function renderOptionsList() {
+	if (!state.isExpanded) {
+		listboxHost.textContent = '';
+		renderedForOptions = null;
+		rowNodes = [];
+		return;
+	}
+
+	if (renderedForOptions !== state.options) {
+		buildOptionsList();
+		renderedForOptions = state.options;
+	}
+
+	updateOptionRowStates();
+}
+
+function buildOptionsList() {
+	listboxHost.textContent = '';
+	rowNodes = [];
+
+	const shell = document.createElement('div');
+	shell.className = 'c-select_options_list__wrapper';
+
+	const list = document.createElement('ul');
+	list.className = 'c-select_options_list';
+	list.id = `${SELECT_ID}_listbox`;
+	list.setAttribute('role', 'listbox');
+	list.setAttribute('aria-label', 'Translate to');
+
+	if (!state.options.length) {
+		const empty = document.createElement('li');
+		empty.className =
+			'c-select_options_list__option c-select_options_list__option--empty';
+		empty.textContent = 'No matches';
+		list.appendChild(empty);
+	}
+
+	state.options.forEach((option, index) => {
+		const row = document.createElement('li');
+		row.id = `${SELECT_ID}_option_${index}`;
+		row.setAttribute('role', 'option');
+		row.className = 'c-select_options_list__option';
+
+		const label = document.createElement('span');
+		label.className = 'c-select_options_list__option_label';
+		label.textContent = option.label;
+		row.appendChild(label);
+
+		row.addEventListener('mousemove', () => {
+			if (state.activeRowIndex !== index) setSelectState({ activeRowIndex: index });
+		});
+		row.addEventListener('click', () => selectOption(option));
+
+		rowNodes.push({ row, label, option });
+		list.appendChild(row);
+	});
+
+	shell.appendChild(list);
+	listboxHost.appendChild(shell);
+}
+
+function updateOptionRowStates() {
+	rowNodes.forEach(({ row, label, option }, index) => {
+		const isSelected =
+			!!state.selectedOption && state.selectedOption.value === option.value;
+		const isActive = state.activeRowIndex === index;
+
+		row.setAttribute('aria-selected', String(isSelected));
+		row.classList.toggle('c-select_options_list__option--selected', isSelected);
+		row.classList.toggle('c-select_options_list__option--active', isActive);
+		label.classList.toggle('c-select_options_list__selected', isSelected);
+	});
+}
+
+function selectOption(option) {
+	setSelectState({
+		isExpanded: false,
+		activeRowIndex: undefined,
+		filterQuery: option.label,
+		selectedOption: option,
+	});
+
+	if (!state.hasFocus) {
+		state.focusedViaMouse = true;
+		input.focus();
+	}
+
+	setTimeout(applyArmSelection, 50);
+
+	clickPhase = CLICK_OPEN;
+}
+
+function showOptionsList() {
+	setSelectState({ isExpanded: true, activeRowIndex: undefined });
+}
+
+function applyArmSelection() {
+	if (!SELECTION_FOLLOWS_INPUT) return;
+
+	if (AUTO_SELECT_TEXT) {
+		if (input.value) input.select();
+	} else if (state.selectedOption) {
+		const len = input.value.length;
+		input.setSelectionRange(len, len);
+	}
+}
+
+wrapper.addEventListener('click', () => {
+	if (!state.hasFocus) {
+		state.focusedViaMouse = true;
+		input.focus();
+	}
+
+	if (!state.selectedOption) {
+		if (state.isExpanded) {
+			setSelectState({ isExpanded: false, activeRowIndex: undefined });
+		} else {
+			showOptionsList();
+		}
+		return;
+	}
+
+	if (clickPhase === CLICK_CARET) return;
+
+	if (clickPhase === CLICK_OPEN) {
+		if (!state.isExpanded) showOptionsList();
+		clickPhase = CLICK_DISMISS;
+	} else {
+		if (state.isExpanded) {
+			setSelectState({ isExpanded: false, activeRowIndex: undefined });
+		}
+		clickPhase = CLICK_CARET;
+	}
+
+	setTimeout(applyArmSelection, 0);
+});
+
+input.addEventListener('focus', () => setSelectState({ hasFocus: true }));
+
+input.addEventListener('blur', (e) => {
+	setSelectState({ hasFocus: false, focusedViaMouse: false });
+	clickPhase = CLICK_OPEN;
+
+	const movedElsewhere =
+		e.relatedTarget &&
+		!wrapper.contains(e.relatedTarget) &&
+		!listboxHost.contains(e.relatedTarget);
+
+	if (movedElsewhere && state.isExpanded) {
+		setSelectState({ isExpanded: false, activeRowIndex: undefined });
+	}
+});
+
+document.addEventListener('mousedown', (e) => {
+	if (!state.isExpanded) return;
+	if (wrapper.contains(e.target) || listboxHost.contains(e.target)) return;
+	setSelectState({ isExpanded: false, activeRowIndex: undefined });
+});
+
+input.addEventListener('input', () => {
+	const value = input.value;
+
+	if (backspaceOrDeletePressed && value.length === 0 && state.selectedOption) {
+		setSelectState({ filterQuery: value, selectedOption: null });
+		return;
+	}
+
+	if (!state.isExpanded) {
+		setSelectState({
+			filterQuery: value,
+			selectedOption: null,
+			isExpanded: true,
+			activeRowIndex: undefined,
+		});
+		return;
+	}
+
+	setSelectState({ filterQuery: value, selectedOption: null, activeRowIndex: undefined });
+});
+
+input.addEventListener('keydown', (e) => {
+	backspaceOrDeletePressed = e.key === 'Backspace' || e.key === 'Delete';
+
+	if (e.key === 'ArrowDown') {
+		e.preventDefault();
+		if (!state.isExpanded) {
+			setSelectState({
+				isExpanded: true,
+				activeRowIndex: state.options.length ? 0 : undefined,
+			});
+		} else if (state.options.length) {
+			const next =
+				typeof state.activeRowIndex === 'number'
+					? (state.activeRowIndex + 1) % state.options.length
+					: 0;
+			setSelectState({ activeRowIndex: next });
+		}
+		return;
+	}
+
+	if (e.key === 'ArrowUp') {
+		e.preventDefault();
+		if (!state.isExpanded) {
+			setSelectState({
+				isExpanded: true,
+				activeRowIndex: state.options.length ? state.options.length - 1 : undefined,
+			});
+		} else if (state.options.length) {
+			const next =
+				typeof state.activeRowIndex === 'number'
+					? (state.activeRowIndex - 1 + state.options.length) % state.options.length
+					: state.options.length - 1;
+			setSelectState({ activeRowIndex: next });
+		}
+		return;
+	}
+
+	if (e.key === 'Enter') {
+		if (!state.isExpanded) {
+			showOptionsList();
+			return;
+		}
+		e.preventDefault();
+		const option = state.options[state.activeRowIndex];
+		if (option) selectOption(option);
+		return;
+	}
+
+	if (e.key === 'Escape') {
+		if (state.isExpanded) {
+			setSelectState({ isExpanded: false, activeRowIndex: undefined });
+		} else {
+			setSelectState({ selectedOption: null, filterQuery: '' });
+		}
+	}
+});
+
+state.options = defaultFilter(OPTIONS, state.filterQuery);
+render();
+</script>
+</body>
+</html>
